@@ -8,17 +8,17 @@ const productArray =[
     {
         "id":1,
         "title":"oneplus7",
-        "price":"Rs 30000"
+        "price":"Rs.30000"
     },
     {
         "id":2,
         "title":"oppo",
-        "price":"Rs 12000"
+        "price":"Rs.12000"
     },
     {
         "id":3,
         "title":"m30s",
-        "price":"Rs 16000"
+        "price":"Rs.16000"
     }
 ]
 class App extends React.Component {
@@ -27,7 +27,8 @@ class App extends React.Component {
         this.state={
             firstState: 'hello world',
             cartCount: 0,
-            products:[] 
+            products:[],
+            cart:[] 
         }
     }
         
@@ -38,23 +39,50 @@ class App extends React.Component {
     }
     componentDidMount(){
         this.loadProducts()
+        fetch('https://my-json-server.typicode.com/shiyasvp92/sample_products/products',{
+            method:'GET'
+        })
+        .then((response)=>{
+            return response.json()
+        })
+        .then((data)=>{
+        console.log(data)
+        this.setState({
+            products:data
+        })
+    })
+    .catch((error)=>{
+        console.error(error)
+    })
+    this.initCart();
     }
-    addCount(){
-      const newCount=this.state.cartCount+1;
-      this.setState({
-        cartCount: newCount
-        
-      })
+    initCart(){
+        let myCart=localStorage.getItem('cart')
+        myCart=JSON.parse(myCart)
+        this.setState({
+            cart:myCart || []
+        })
+    }
+    addToCart(products){
+        const newCart=this.state.cart;
+        newCart.push(products);
+        localStorage.setItem('cart',JSON.stringify(newCart))
+        this.setState({
+            cart:newCart
+        })
+        }
       
-    }
  loadProducts(){
      this.setState({
          products:productArray
      })
  }
+ viewCart(){
+     console.log(this.state.cart)
+ }
  render() {
      const productList=this.state.products.map((products)=>{
-         return productTile(this.addCount.bind(this),products)
+         return productTile(this.addToCart.bind(this),products)
      })
      console.log(productList)
     return (
@@ -66,7 +94,9 @@ class App extends React.Component {
     {this.state.firstState}
     
     <p align="right">
-    <button type="button" className="btn btn-warning">Cart{this.state.cartCount}</button>
+    <button type="button" className="btn btn-warning" onClick={()=>{
+        this.viewCart();
+    }}>Cart{this.state.cart.length}</button>
     </p>
     </nav>
                <div className="row">

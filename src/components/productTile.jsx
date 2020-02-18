@@ -1,5 +1,5 @@
 import React from "react";
-export default function productTile(addCount,products) {
+export default function productTile(addToCart,products) {
     return (
        
         <div className="col-3">
@@ -13,7 +13,7 @@ export default function productTile(addCount,products) {
                             <h5 className="card-title">{products.title}</h5>
                             <h5>{products.price}</h5>
                             <button type="button" className="btn btn-primary btn-lg" onClick={() =>{
-                              addCount()
+                              addToCart(products)
                               
                             }
 
